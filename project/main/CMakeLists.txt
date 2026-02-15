@@ -1,2 +1,3 @@
-idf_component_register(SRCS "project.c"
-                    INCLUDE_DIRS ".")
+idf_component_register(SRCS "main.c"
+                    INCLUDE_DIRS "." "../services"
+                    SRCS "../services/wifi.c")
