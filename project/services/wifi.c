@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include "esp_log.h"
 #include "nvs_flash.h"
 #include "esp_netif.h"
@@ -10,6 +11,8 @@
 
 static char *wifi_ap_ssid = "Sumit";
 static char *wifi_ap_pswd = "123456789";
+
+static bool gf_wifi_status = 0;
 
 static void event_handler(void *arg, esp_event_base_t event_base,
                           int32_t event_id, void *event_data);
@@ -59,11 +62,13 @@ void event_handler(void *arg, esp_event_base_t event_base,
     }
     else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED)
     {
+        gf_wifi_status = false;
         ESP_LOGI(LOG_WIFI, "Disconnected. Reconnecting...");
         esp_wifi_connect();
     }
     else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_CONNECTED)
     {
+        gf_wifi_status = true;
         ESP_LOGI(LOG_WIFI, "Connected: ");
     }
     else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
@@ -102,4 +107,9 @@ void print_network_info(void)
     dns_server = dns_getserver(1);
     ESP_LOGI(LOG_WIFI, "Secondary DNS: " IPSTR, IP2STR(&dns_server->u_addr.ip4));
     ESP_LOGI(LOG_WIFI, "=================================================");
+}
+
+bool wifi_get_status()
+{
+    return gf_wifi_status;
 }
