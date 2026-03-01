@@ -38,7 +38,6 @@ void mqtt_event_handler(void *event_handler_arg,
     {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(MQTT, "MQTT Connected");
-        esp_mqtt_client_publish(client, "sumit_test1", "Hello from ESP32", 0, 1, 0);
         break;
 
     case MQTT_EVENT_DISCONNECTED:
