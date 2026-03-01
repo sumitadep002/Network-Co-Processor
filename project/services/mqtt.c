@@ -3,6 +3,7 @@
 #include "mqtt_client.h"
 #include "esp_tls.h"
 #include "esp_log.h"
+#include "esp_crt_bundle.h"
 
 #define MQTT "MQTT"
 
@@ -17,7 +18,8 @@ bool mqtt_init()
 {
     // Configure Broker
     esp_mqtt_client_config_t mqtt_cfg = {
-        .broker.address.uri = "mqtt://broker.hivemq.com", // default port 1883
+        .broker.address.uri = "mqtts://broker.hivemq.com",
+        .broker.verification.crt_bundle_attach = esp_crt_bundle_attach,
     };
 
     client = esp_mqtt_client_init(&mqtt_cfg);
@@ -38,6 +40,9 @@ void mqtt_event_handler(void *event_handler_arg,
     {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(MQTT, "MQTT Connected");
+        esp_mqtt_event_handle_t event = (esp_mqtt_event_handle_t)event_data;
+        esp_mqtt_client_handle_t client = event->client;
+        esp_mqtt_client_publish(client, "sumit/esp/test", "Hello-World", 0, 1, 0);
         break;
 
     case MQTT_EVENT_DISCONNECTED:
