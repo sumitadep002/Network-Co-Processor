@@ -52,3 +52,8 @@ void http_client_ping_task(void *pvParameters)
         DELAY_MS(PING_INTERVAL);
     }
 }
+
+bool http_get_ping_status()
+{
+    return gf_internet_status;
+}
